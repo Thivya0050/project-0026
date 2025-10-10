@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Cart - Ali, Muthu & Ah Hock</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #efebce;
+        }
+
+        /* Header Section with Logo */
+        .header-section {
+            background-color: #bf8a47;
+            width: 100%;
+            height: 13vh;
+            display: flex;
+            align-items: center;
+            padding: 15px 40px;
+        }
+
+        .logo-container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 85%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Cart Items Section */
+        .cart-section {
+            flex: 1;
+            width: 100%;
+            padding: 20px 40px;
+            overflow-y: auto;
+            background-color: #efebce;
+        }
+
+        .cart-items-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .cart-item {
+            background-color: #362315;
+            border-radius: 25px;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            min-height: 140px;
+        }
+
+        .item-image-container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            width: 120px;
+            height: 120px;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-right: 25px;
+        }
+
+        .item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: white;
+        }
+
+        .item-name {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .item-price-row {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .item-total-price {
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 12px;
+        }
+
+        .quantity-btn {
+            background-color: white;
+            color: #362315;
+            border: none;
+            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background-color: #f7b817;
+            transform: scale(1.1);
+        }
+
+        .quantity-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quantity-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .quantity-btn:disabled:hover {
+            transform: none;
+            background-color: #cccccc;
+        }
+
+        .quantity-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .item-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-left: auto;
+            padding-left: 15px;
+        }
+
+        .item-customize {
+            background-color: #f7b817;
+            color: #362315;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .item-customize:hover {
+            background-color: #ffca28;
+            transform: scale(1.05);
+        }
+
+        .item-remove {
+            background-color: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .item-remove:hover {
+            background-color: #a00000;
+            transform: scale(1.05);
+        }
+
+        /* Empty Cart Message */
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: #362315;
+        }
+
+        .empty-cart-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Total Section */
+        .total-section {
+            width: 100%;
+            padding: 15px 40px;
+            background-color: #efebce;
+        }
+
+        .total-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 20px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .total-label {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000000;
+            text-transform: uppercase;
+        }
+
+        .total-amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        /* Footer Buttons Section */
+        .footer-section {
+            background-color: #efebce;
+            width: 100%;
+            padding: 20px 40px 30px 40px;
+        }
+
+        .button-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 25px;
+        }
+
+        .back-button {
+            background-color: #362315;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 22px 50px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex: 0 0 200px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+            background-color: #4a3020;
+        }
+
+        .pay-button {
+            background-color: #f7b817;
+            color: #362315;
+            border: none;
+            border-radius: 20px;
+            padding: 22px 50px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex: 1;
+        }
+
+        .pay-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+            background-color: #ffca28;
+        }
+
+        .pay-button:disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-button:active,
+        .pay-button:active {
+            transform: translateY(0);
+        }
+
+        /* Samsung A8 Tablet Optimization - 1920x1200 */
+        @media (min-width: 1200px) and (max-width: 1920px) and (min-height: 800px) {
+            .header-section {
+                height: 12vh;
+                padding: 15px 50px;
+            }
+
+            .cart-section {
+                padding: 25px 50px;
+            }
+
+            .cart-items-container {
+                gap: 22px;
+            }
+
+            .cart-item {
+                padding: 25px 35px;
+                min-height: 165px;
+            }
+
+            .item-image-container {
+                width: 140px;
+                height: 140px;
+                min-width: 140px;
+                margin-right: 30px;
+            }
+
+            .item-name {
+                font-size: 26px;
+                margin-bottom: 12px;
+            }
+
+            .quantity-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 22px;
+            }
+
+            .quantity-display {
+                font-size: 20px;
+                min-width: 45px;
+            }
+
+            .item-total-price {
+                font-size: 26px;
+            }
+
+            .item-customize,
+            .item-remove {
+                padding: 12px 24px;
+                font-size: 16px;
+            }
+
+            .total-section {
+                padding: 18px 50px;
+            }
+
+            .total-container {
+                padding: 25px 50px;
+            }
+
+            .total-label {
+                font-size: 32px;
+            }
+
+            .total-amount {
+                font-size: 36px;
+            }
+
+            .footer-section {
+                padding: 25px 50px 35px 50px;
+            }
+
+            .button-container {
+                gap: 30px;
+            }
+
+            .back-button {
+                padding: 25px 55px;
+                font-size: 26px;
+                flex: 0 0 220px;
+            }
+
+            .pay-button {
+                padding: 25px 55px;
+                font-size: 26px;
+            }
+        }
+
+        /* Tablet responsive */
+        @media (max-width: 1024px) {
+            .cart-item {
+                padding: 18px 22px;
+                min-height: 135px;
+            }
+
+            .item-image-container {
+                width: 110px;
+                height: 110px;
+                min-width: 110px;
+                margin-right: 20px;
+            }
+
+            .item-name {
+                font-size: 20px;
+            }
+
+            .quantity-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 18px;
+            }
+
+            .item-customize,
+            .item-remove {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+
+            .total-label {
+                font-size: 24px;
+            }
+
+            .total-amount {
+                font-size: 28px;
+            }
+
+            .back-button,
+            .pay-button {
+                padding: 20px 40px;
+                font-size: 22px;
+            }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .header-section {
+                height: 10vh;
+                padding: 10px 20px;
+            }
+
+            .cart-section {
+                padding: 15px 20px;
+            }
+
+            .cart-item {
+                flex-wrap: wrap;
+                padding: 15px;
+                min-height: auto;
+            }
+
+            .item-image-container {
+                width: 90px;
+                height: 90px;
+                min-width: 90px;
+                margin-right: 15px;
+            }
+
+            .item-details {
+                flex: 1;
+                min-width: 200px;
+            }
+
+            .item-actions {
+                width: 100%;
+                flex-direction: row;
+                justify-content: space-between;
+                margin-left: 0;
+                margin-top: 12px;
+                padding-left: 0;
+            }
+
+            .item-customize,
+            .item-remove {
+                flex: 1;
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+
+            .button-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .back-button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Logo -->
+    <div class="header-section">
+        <div class="logo-container">
+            <img src="Ah Hock Ken Mee.png" alt="Ali, Muthu & Ah Hock" class="logo">
+        </div>
+    </div>
+
+    <!-- Cart Items Section -->
+    <div class="cart-section">
+        <div class="cart-items-container" id="cartItemsContainer">
+            <!-- Cart items will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Total Section -->
+    <div class="total-section">
+        <div class="total-container">
+            <div class="total-label" data-translate="total">TOTAL</div>
+            <div class="total-amount" id="totalAmount">RM 0.00</div>
+        </div>
+    </div>
+
+    <!-- Footer Buttons -->
+    <div class="footer-section">
+        <div class="button-container">
+            <button class="back-button" onclick="goBack()" data-translate="back">BACK</button>
+            <button class="pay-button" onclick="proceedToPayment()" id="payButton" data-translate="payHere">PAY HERE</button>
+        </div>
+        <!-- DEBUG: Remove this button after testing -->
+        <!-- <button onclick="addTestItem()" style="position: fixed; top: 200px; right: 20px; z-index: 1000; padding: 10px 20px; background: red; color: white; border: none; border-radius: 8px; cursor: pointer;">Add Test Item</button> -->
+    </div>
+
+    <!-- Translation System -->
+    <script src="translations.js"></script>
+
+    <script>
+        // Cart data structure
+        let cartItems = [];
+
+        // Load cart from localStorage
+        function loadCart() {
+            try {
+                const savedCart = localStorage.getItem('amakiosk_cart');
+                console.log('Raw cart data:', savedCart);
+                
+                if (savedCart && savedCart !== 'null' && savedCart !== 'undefined') {
+                    cartItems = JSON.parse(savedCart);
+                    console.log('Parsed cart items:', cartItems);
+                } else {
+                    console.log('No cart data found or invalid data');
+                    cartItems = [];
+                }
+            } catch (error) {
+                console.error('Error loading cart:', error);
+                cartItems = [];
+            }
+            
+            displayCart();
+            updateTotal();
+        }
+
+        // Display cart items
+        function displayCart() {
+            const container = document.getElementById('cartItemsContainer');
+            console.log('Displaying cart with', cartItems.length, 'items');
+            
+            if (!cartItems || cartItems.length === 0) {
+                console.log('Cart is empty, showing empty message');
+                container.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <div class="empty-cart-text" data-translate="emptyCart">Your cart is empty</div>
+                    </div>
+                `;
+                document.getElementById('payButton').disabled = true;
+                return;
+            }
+
+            console.log('Rendering', cartItems.length, 'items');
+            document.getElementById('payButton').disabled = false;
+            
+            container.innerHTML = cartItems.map((item, index) => {
+                // Handle image path - extract filename if full path
+                let imageSrc = item.image || '';
+                if (imageSrc) {
+                    // If it's a full URL, extract just the filename
+                    const parts = imageSrc.split('/');
+                    imageSrc = parts[parts.length - 1];
+                }
+                // Fallback to placeholder if no image
+                if (!imageSrc || imageSrc === 'undefined') {
+                    imageSrc = 'placeholder.png';
+                }
+                
+                return `
+                <div class="cart-item">
+                    <div class="item-image-container">
+                        <img src="${imageSrc}" alt="${item.name}" class="item-image" onerror="this.src='placeholder.png'">
+                    </div>
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-info">
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="decreaseQuantity(${index})" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
+                                <div class="quantity-display">${item.quantity}</div>
+                                <button class="quantity-btn" onclick="increaseQuantity(${index})">+</button>
+                            </div>
+                            <div class="item-price-row">
+                                <div class="item-total-price">RM ${(item.price * item.quantity).toFixed(2)}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="item-customize" onclick="customizeItem(${index})" data-translate="customize">CUSTOMIZE</button>
+                        <button class="item-remove" onclick="removeItem(${index})" data-translate="remove">REMOVE</button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            // Update translations after rendering
+            if (typeof updatePageTranslations === 'function') {
+                updatePageTranslations();
+            }
+        }
+
+        // Calculate and update total
+        function updateTotal() {
+            const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('totalAmount').textContent = `RM ${total.toFixed(2)}`;
+        }
+
+        // Increase quantity
+        function increaseQuantity(index) {
+            cartItems[index].quantity += 1;
+            saveCart();
+            displayCart();
+            updateTotal();
+        }
+
+        // Decrease quantity
+        function decreaseQuantity(index) {
+            if (cartItems[index].quantity > 1) {
+                cartItems[index].quantity -= 1;
+                saveCart();
+                displayCart();
+                updateTotal();
+            }
+            // If quantity is already 1, do nothing - user must use REMOVE button
+        }
+
+        // Customize item
+        function customizeItem(index) {
+            const item = cartItems[index];
+            
+            // Save item data to localStorage for customization page
+            const customizeData = {
+                name: item.name,
+                price: item.price,
+                basePrice: item.basePrice || item.price, // Use basePrice if available
+                image: item.image,
+                cartIndex: index
+            };
+            
+            localStorage.setItem('customize_item', JSON.stringify(customizeData));
+            console.log('Opening customization for editing:', customizeData);
+            
+            // Redirect to customization page
+            window.location.href = 'customize-item.html';
+        }
+
+        // Remove item from cart
+        function removeItem(index) {
+            cartItems.splice(index, 1);
+            saveCart();
+            displayCart();
+            updateTotal();
+        }
+
+        // Save cart to localStorage
+        function saveCart() {
+            localStorage.setItem('amakiosk_cart', JSON.stringify(cartItems));
+        }
+
+        // Go back to menu
+        function goBack() {
+            window.location.href = 'new-menu-sample.html';
+        }
+
+        // Proceed to payment
+        function proceedToPayment() {
+            if (cartItems.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            
+            // Save cart total
+            const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            localStorage.setItem('kioskCartTotal', total.toFixed(2));
+            
+            // Navigate to payment page
+            window.location.href = 'payment-page.html';
+        }
+
+        // Reload cart when page becomes visible (handles back navigation)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                console.log('Page became visible, reloading cart...');
+                loadCart();
+            }
+        });
+
+        // Reload cart when window gains focus
+        window.addEventListener('focus', function() {
+            console.log('Window focused, reloading cart...');
+            loadCart();
+        });
+
+        // Reload cart when page loads (pageshow event catches all loads including back/forward)
+        window.addEventListener('pageshow', function(event) {
+            console.log('Page show event, reloading cart...');
+            loadCart();
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== CART PAGE LOADED ===');
+            console.log('Timestamp:', new Date().toISOString());
+            console.log('Checking localStorage for cart...');
+            
+            // Check both possible keys
+            const cartKey1 = localStorage.getItem('amakiosk_cart');
+            const cartKey2 = localStorage.getItem('kioskCart');
+            
+            console.log('amakiosk_cart:', cartKey1);
+            console.log('kioskCart:', cartKey2);
+            
+            // Force load cart
+            loadCart();
+            
+            // Update translations
+            if (typeof updatePageTranslations === 'function') {
+                updatePageTranslations();
+            }
+            
+            console.log('Final cart items count:', cartItems.length);
+            console.log('Cart items:', cartItems);
+            console.log('======================');
+        });
+
+        // TEST FUNCTION - Add a sample item for debugging
+        function addTestItem() {
+            const testItem = {
+                name: 'Test Nasi Lemak',
+                price: 9.50,
+                quantity: 1,
+                image: 'Nasi Lemak Ayam Goreng.png'
+            };
+            
+            cartItems.push(testItem);
+            saveCart();
+            displayCart();
+            updateTotal();
+            console.log('Test item added');
+        }
+        
+        // Make it available from console
+        window.addTestItem = addTestItem;
+    </script>
+</body>
+</html>
+
