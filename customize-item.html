@@ -521,6 +521,16 @@
                     isEditingCartItem = true;
                     editingCartIndex = currentItem.cartIndex;
                     console.log('Editing existing cart item at index:', editingCartIndex);
+                    
+                    // Load existing customizations from cart item
+                    if (currentItem.customizations && Array.isArray(currentItem.customizations)) {
+                        currentItem.customizations.forEach(custom => {
+                            if (custom.id && custom.quantity) {
+                                customizationQuantities[custom.id] = custom.quantity;
+                                console.log('Loaded customization:', custom.id, '= qty', custom.quantity);
+                            }
+                        });
+                    }
                 }
             } else {
                 // Fallback to default
@@ -531,8 +541,13 @@
                 };
             }
 
-            // Display item
-            document.getElementById('itemName').textContent = currentItem.name;
+            // Display item - show base name without customizations
+            let displayName = currentItem.name;
+            if (isEditingCartItem) {
+                // Remove customization text in parentheses for display
+                displayName = displayName.replace(/\s*\([^)]*\)\s*$/, '').trim();
+            }
+            document.getElementById('itemName').textContent = displayName;
             document.getElementById('itemImage').src = currentItem.image || 'placeholder.png';
             
             // Use basePrice if available (when editing), otherwise use price (when adding new)
@@ -675,12 +690,19 @@
                 customizedName = `${baseItemName} (${customText})`;
             }
 
+            // Preserve quantity if editing existing item
+            let itemQuantity = 1;
+            if (isEditingCartItem && editingCartIndex >= 0 && editingCartIndex < cartItems.length) {
+                itemQuantity = cartItems[editingCartIndex].quantity || 1;
+                console.log('Preserving existing quantity:', itemQuantity);
+            }
+
             const updatedCartItem = {
                 name: customizedName,
                 price: totalPrice,
                 basePrice: basePrice, // Store base price for future edits
                 image: currentItem.image,
-                quantity: 1,
+                quantity: itemQuantity, // Preserve quantity when editing
                 customizations: customizationsList
             };
 
@@ -698,19 +720,35 @@
 
             // Save cart
             localStorage.setItem('amakiosk_cart', JSON.stringify(cartItems));
-            console.log('✅ Cart will show price: RM ' + totalPrice.toFixed(2));
+            console.log('✅ Cart saved. Total items:', cartItems.length);
+            console.log('✅ Item price: RM ' + totalPrice.toFixed(2));
 
             // Clear customize data
             localStorage.removeItem('customize_item');
 
-            // Go back to cart
-            window.location.href = 'cart-page.html';
+            // If editing, go back to cart; if adding new, go to menu with success notification
+            if (isEditingCartItem) {
+                console.log('Returning to cart page (was editing)');
+                window.location.href = 'cart-page.html';
+            } else {
+                // Set flag to show success notification on menu page
+                localStorage.setItem('show_add_success', 'true');
+                localStorage.setItem('added_item_name', customizedName);
+                console.log('Returning to menu page (was adding new) - will show success notification');
+                window.location.href = 'new-menu-sample.html';
+            }
         }
 
-        // Go back to cart
+        // Go back to previous page
         function goBack() {
             localStorage.removeItem('customize_item');
-            window.location.href = 'cart-page.html';
+            
+            // If we were editing, go back to cart; otherwise go to menu
+            if (isEditingCartItem) {
+                window.location.href = 'cart-page.html';
+            } else {
+                window.location.href = 'new-menu-sample.html';
+            }
         }
 
         // Initialize on page load
