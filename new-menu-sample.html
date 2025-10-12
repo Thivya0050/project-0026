@@ -120,7 +120,7 @@
             left: 0;
             right: 0;
             height: 12vh;
-            background: #d38c21;
+            background:#bf8a47;
             display: flex;
             align-items: center;
             padding: 0 20px;
@@ -129,11 +129,11 @@
 
         .logo {
             position: absolute;
-            left: 20px;
+            left: 90px;
             top: 50%;
             transform: translateY(-50%);
-            width: 155px;
-            height: 115px;
+            width: 90px;
+            height: 75px;
             background: url('logo old.png?v=2') no-repeat center;
             background-size: contain;
             border-radius: 8px;
@@ -149,7 +149,7 @@
             font-weight: bold;
             text-transform: uppercase;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            border: 3px solid #8B4513;
+            border: 3px solid #bf8a47;
             text-align: center;
             position: absolute;
             left: 18vw;
@@ -233,12 +233,79 @@
             margin-left: 18vw;
             margin-top: 12vh;
             padding: 30px;
+            padding-bottom: 180px; /* Extra space for bottom nav + breathing room */
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             position: relative;
             z-index: 5;
-            height: 88vh;
+            height: calc(100vh - 12vh);
+            max-height: calc(100vh - 12vh);
             background: #F5F5DC;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Custom Scrollbar for better visibility on tablet */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: rgba(139, 69, 19, 0.1);
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: #bf8a47;
+            border-radius: 10px;
+            border: 2px solid #F5F5DC;
+        }
+
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: oklch(67.212% 0.10594 70.667);
+        }
+
+        /* Top scroll confirmation indicator - blue gradient */
+        .main-content::before {
+            content: '';
+            position: fixed;
+            top: 12vh;
+            left: 18vw;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(to bottom, rgba(33, 150, 243, 0.6), transparent);
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.4);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 15;
+        }
+
+        /* Bottom scroll confirmation indicator - blue gradient */
+        .main-content::after {
+            content: '';
+            position: fixed;
+            bottom: 10vh;
+            left: 18vw;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(to top, rgba(33, 150, 243, 0.6), transparent);
+            box-shadow: 0 -2px 8px rgba(33, 150, 243, 0.4);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 15;
+        }
+
+        /* Show highlights when at edges */
+        .main-content.at-top::before {
+            opacity: 1;
+        }
+
+        .main-content.at-bottom::after {
+            opacity: 1;
         }
 
         .menu-grid {
@@ -246,7 +313,8 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 30px;
             max-width: 100%;
-            margin: 0 auto;
+            margin: 0 auto 40px auto;
+            padding-bottom: 20px;
         }
 
         .menu-item {
@@ -261,10 +329,14 @@
             flex-direction: column;
         }
 
+        .menu-item.hidden {
+            display: none !important;
+        }
+
         .menu-item:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-            border-color: #8B4513;
+            border-color: #bf8a47;
         }
 
         .menu-item-image {
@@ -273,7 +345,7 @@
             object-fit: cover;
             background: #f8f8f8;
             display: block;
-            border-radius: 12px 12px 0 0;
+            border-radius: 15px;
             order: 1;
         }
 
@@ -314,12 +386,14 @@
             left: 18vw;
             right: 0;
             height: 10vh;
-            background: #e1f59b;
+            min-height: 80px;
+            background:#efebce;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 30px;
-            z-index: 10;
+            z-index: 50;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
         }
 
         .nav-btn {
@@ -356,64 +430,153 @@
             min-width: 300px !important;
             font-weight: bold;
             text-shadow: none;
+            transition: all 0.3s ease;
+        }
+
+        .cart-btn.shake {
+            animation: cartShake 0.5s ease;
+        }
+
+        @keyframes cartShake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-5px);
+            }
+            20%, 40%, 60%, 80% {
+                transform: translateX(5px);
+            }
         }
 
         /* Cart Badge */
         .cart-badge {
             position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #ff4444;
+            top: -10px;
+            right: -10px;
+            background: linear-gradient(135deg, #ff3333, #cc0000);
             color: white;
             border-radius: 50%;
-            min-width: 24px;
-            height: 24px;
+            min-width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 16px;
             font-weight: bold;
-            border: 2px solid white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
             opacity: 0;
             transform: scale(0);
-            transition: all 0.3s ease;
-            z-index: 10;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 100;
         }
 
         .cart-badge.show {
-            opacity: 1;
-            transform: scale(1);
+            opacity: 1 !important;
+            transform: scale(1) !important;
         }
 
-        /* Cart Notification Popup */
+        .cart-badge.pop {
+            animation: badgePop 0.6s ease;
+        }
+
+        @keyframes badgePop {
+            0% {
+                transform: scale(1);
+            }
+            30% {
+                transform: scale(1.4);
+            }
+            50% {
+                transform: scale(0.9);
+            }
+            70% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Cart Notification Popup - Kiosk Style with Theme Color */
         .cart-notification {
             position: fixed;
-            top: 100px;
-            right: 20px;
-            background: linear-gradient(135deg, #af904c, #f3ac28);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            font-size: 14px;
+            top: 15vh;
+            right: 40px;
+            background: linear-gradient(135deg, #FDB913, #ffca28);
+            color: #362315;
+            padding: 25px 40px;
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 40px rgba(253, 185, 19, 0.6);
+            font-size: 22px;
             font-weight: bold;
-            z-index: 1000;
             opacity: 0;
-            transform: translateX(100%);
-            transition: all 0.3s ease;
-            max-width: 250px;
-            border-left: 4px solid #754e22;
+            transform: translateX(600px) scale(0.7);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 350px;
+            max-width: 450px;
+            border: 5px solid #362315;
+            animation: none;
+            pointer-events: none;
         }
 
         .cart-notification.show {
-            opacity: 1;
-            transform: translateX(0);
+            opacity: 1 !important;
+            transform: translateX(0) scale(1) !important;
+            animation: pulse 0.5s ease 0.3s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: translateX(0) scale(1);
+            }
+            50% {
+                transform: translateX(0) scale(1.05);
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(500px) scale(0.8);
+            }
+        }
+
+        .cart-notification.hide {
+            animation: slideOut 0.4s ease forwards;
         }
 
         .cart-notification-icon {
-            margin-right: 8px;
-            font-size: 16px;
+            margin-right: 15px;
+            font-size: 36px;
+            font-weight: bold;
+            animation: checkmark 0.6s ease;
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+        }
+
+        @keyframes checkmark {
+            0% {
+                transform: scale(0) rotate(-45deg);
+            }
+            50% {
+                transform: scale(1.3) rotate(10deg);
+            }
+            100% {
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        .cart-notification.show .cart-notification-icon {
+            animation: checkmark 0.6s ease;
         }
 
         /* Responsive Design */
@@ -491,60 +654,6 @@
 
         }
 
-        /* Scroll Edge Highlights */
-        .scroll-wrapper {
-            position: relative;
-            height: calc(100vh - 160px);
-            overflow: visible;
-        }
-
-        .scroll-content {
-            height: 100%;
-            overflow-y: auto;
-            scroll-behavior: smooth;
-            padding: 20px;
-            margin: 0;
-        }
-
-        /* Top highlight - blue gradient */
-        .scroll-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 40px;
-            background: linear-gradient(to bottom, rgba(59, 130, 246, 0.4), transparent);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 10;
-        }
-
-        /* Bottom highlight - blue gradient */
-        .scroll-wrapper::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 40px;
-            background: linear-gradient(to top, rgba(59, 130, 246, 0.4), transparent);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 10;
-        }
-
-        /* Show highlights when at edges */
-        .scroll-wrapper.at-top::before {
-            opacity: 1;
-        }
-
-        .scroll-wrapper.at-bottom::after {
-            opacity: 1;
-        }
-
         /* Samsung A8 Tablet Optimization - 10.5" 1920x1200 */
         @media (min-width: 1200px) and (max-width: 1920px) and (min-height: 800px) {
             body {
@@ -602,8 +711,8 @@
             }
 
             .logo {
-                width: 160px;
-                height: 120px;
+                width: 120px;
+                height: 95px;
             }
 
             .header-title {
@@ -615,14 +724,53 @@
                 margin-left: 18vw;
                 margin-top: 12vh;
                 padding: 30px;
-                height: 78vh;
+                padding-bottom: 180px;
+                height: calc(100vh - 12vh);
+                max-height: calc(100vh - 12vh);
+                overflow-y: auto;
+                overflow-x: hidden;
+                scroll-behavior: smooth;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Top scroll confirmation indicator (Samsung A8) */
+            .main-content::before {
+                height: 10px;
+            }
+
+            /* Bottom scroll confirmation indicator (Samsung A8) */
+            .main-content::after {
+                height: 10px;
+            }
+
+            /* Cart notification for tablet */
+            .cart-notification {
+                top: 15vh;
+                right: 40px;
+                padding: 22px 35px;
+                font-size: 20px;
+                max-width: 400px; 
+            }
+
+            .cart-notification-icon {
+                font-size: 32px;
+            }
+
+            /* Cart badge for tablet */
+            .cart-badge {
+                min-width: 32px;
+                height: 32px;
+                font-size: 16px;
+                top: -10px;
+                right: -10px;
             }
 
             .menu-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 30px;
                 max-width: 100%;
-                margin: 0 auto;
+                margin: 0 auto 40px auto;
+                padding-bottom: 20px;
             }
 
             .menu-item {
@@ -634,7 +782,7 @@
                 width: 100%;
                 object-fit: cover;
                 background: #f8f8f8;
-                border-radius: 12px 12px 0 0;
+                border-radius: 15px;
                 order: 1;
             }
 
@@ -668,6 +816,7 @@
             .bottom-nav {
                 left: 18vw;
                 height: 10vh;
+                min-height: 80px;
                 gap: 30px;
             }
 
@@ -685,6 +834,7 @@
                 font-weight: bold;
                 text-shadow: none;
             }
+
         }
     </style>
 </head>
@@ -709,10 +859,10 @@
     <div class="sidebar">
         <div class="sidebar-logo"></div>
         <div class="sidebar-nav">
-            <button class="category-btn active" onclick="showCategory('rice')" data-translate="rice">RICE</button>
-            <button class="category-btn" onclick="showCategory('noodles')" data-translate="noodles">NOODLES</button>
-            <button class="category-btn" onclick="showCategory('sides')" data-translate="sides">SIDES</button>
-            <button class="category-btn" onclick="showCategory('drinks')" data-translate="drinks">DRINKS</button>
+            <button class="category-btn active" onclick="showCategory('rice', this)" data-translate="rice">RICE</button>
+            <button class="category-btn" onclick="showCategory('noodles', this)" data-translate="noodles">NOODLES</button>
+            <button class="category-btn" onclick="showCategory('sides', this)" data-translate="sides">SIDES</button>
+            <button class="category-btn" onclick="showCategory('drinks', this)" data-translate="drinks">DRINKS</button>
         </div>
     </div>
 
@@ -721,9 +871,7 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="scroll-wrapper" id="scrollWrapper">
-            <div class="scroll-content">
-                <div class="menu-grid" id="menuGrid">
+        <div class="menu-grid" id="menuGrid">
             <!-- Rice Menu Items -->
             <div class="menu-item" data-category="rice">
                 <img src="Nasi Goreng Kampung.png" alt="Fried Rice from Kampung" class="menu-item-image">
@@ -786,124 +934,146 @@
             </div>
 
             <!-- Noodles Menu Items -->
-            <div class="menu-item" data-category="noodles" style="display: none;">
+            <div class="menu-item hidden" data-category="noodles">
                 <img src="Mee Goreng.png" alt="Mee Goreng" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Mee Goreng">Mee Goreng</div>
                 <div class="menu-item-price">RM 7.00</div>
             </div>
 
-            <div class="menu-item" data-category="noodles" style="display: none;">
+            <div class="menu-item hidden" data-category="noodles">
                 <img src="Mee Soto.png" alt="Mee Soto" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Mee Soto">Mee Soto</div>
                 <div class="menu-item-price">RM 8.50</div>
             </div>
 
-            <div class="menu-item" data-category="noodles" style="display: none;">
+            <div class="menu-item hidden" data-category="noodles">
                 <img src="Mee Rebus.png" alt="Mee Rebus" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Mee Rebus">Mee Rebus</div>
                 <div class="menu-item-price">RM 7.50</div>
             </div>
 
-            <div class="menu-item" data-category="noodles" style="display: none;">
+            <div class="menu-item hidden" data-category="noodles">
                 <img src="Bihun Goreng.png" alt="Bihun Goreng" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Bihun Goreng">Bihun Goreng</div>
                 <div class="menu-item-price">RM 6.50</div>
             </div>
 
-            <div class="menu-item" data-category="noodles" style="display: none;">
+            <div class="menu-item hidden" data-category="noodles">
                 <img src="Bihun Soto.png" alt="Bihun Soto" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Bihun Soto">Bihun Soto</div>
                 <div class="menu-item-price">RM 7.00</div>
             </div>
 
-            <div class="menu-item" data-category="noodles" style="display: none;">
+            <div class="menu-item hidden" data-category="noodles">
                 <img src="Kuey Teow.png" alt="Kuey Teow" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Kuey Teow">Kuey Teow</div>
                 <div class="menu-item-price">RM 8.00</div>
             </div>
 
-            <div class="menu-item" data-category="noodles" style="display: none;">
+            <div class="menu-item hidden" data-category="noodles">
                 <img src="Prawn noodle.png" alt="Prawn Noodle" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Prawn Noodle">Prawn Noodle</div>
                 <div class="menu-item-price">RM 9.50</div>
             </div>
 
-            <div class="menu-item" data-category="noodles" style="display: none;">
+            <div class="menu-item hidden" data-category="noodles">
                 <img src="Cantonese Noodles.png" alt="Cantonese Noodles" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Cantonese Noodles">Cantonese Noodles</div>
                 <div class="menu-item-price">RM 8.50</div>
             </div>
 
-            <div class="menu-item" data-category="noodles" style="display: none;">
+            <div class="menu-item hidden" data-category="noodles">
                 <img src="Assam Laksa.png" alt="Assam Laksa" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Assam Laksa">Assam Laksa</div>
                 <div class="menu-item-price">RM 7.50</div>
             </div>
 
-            <div class="menu-item" data-category="noodles" style="display: none;">
+            <div class="menu-item hidden" data-category="noodles">
                 <img src="Ah Hock Ken Mee.png" alt="Ah Hock Ken Mee" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Ah Hock Ken Mee">Ah Hock Ken Mee</div>
                 <div class="menu-item-price">RM 8.00</div>
             </div>
 
             <!-- Sides Menu Items -->
-            <div class="menu-item" data-category="sides" style="display: none;">
+            <div class="menu-item hidden" data-category="sides">
                 <img src="Ayam Crispy.png" alt="Crispy Chicken" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Crispy Chicken">Crispy Chicken</div>
                 <div class="menu-item-price">RM 5.00</div>
             </div>
 
-            <div class="menu-item" data-category="sides" style="display: none;">
+            <div class="menu-item hidden" data-category="sides">
                 <img src="Nasi Lemak Ayam Goreng.png" alt="Nasi Lemak with Fried Chicken" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Nasi Lemak with Fried Chicken">Nasi Lemak with Fried Chicken</div>
                 <div class="menu-item-price">RM 9.00</div>
             </div>
 
-            <div class="menu-item" data-category="sides" style="display: none;">
+            <div class="menu-item hidden" data-category="sides">
                 <img src="Nasi Lemak Ayam Sambal.png" alt="Nasi Lemak with Sambal Chicken" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Nasi Lemak with Sambal Chicken">Nasi Lemak with Sambal Chicken</div>
                 <div class="menu-item-price">RM 8.50</div>
             </div>
 
-            <div class="menu-item" data-category="sides" style="display: none;">
+            <div class="menu-item hidden" data-category="sides">
                 <img src="Nasi Lemak Biasa.png" alt="Regular Nasi Lemak" class="menu-item-image">
                 <div class="menu-item-name" data-translate="Regular Nasi Lemak">Regular Nasi Lemak</div>
                 <div class="menu-item-price">RM 6.00</div>
             </div>
 
             <!-- Drinks Menu Items -->
-            <div class="menu-item" data-category="drinks" style="display: none;">
-                <img src="Prawn noodle.png" alt="Prawn Noodle" class="menu-item-image">
-                <div class="menu-item-name" data-translate="Prawn Noodle">Prawn Noodle</div>
-                <div class="menu-item-price">RM 9.50</div>
+            <div class="menu-item hidden" data-category="drinks">
+                <img src="Prawn noodle.png" alt="Teh Tarik" class="menu-item-image">
+                <div class="menu-item-name" data-translate="Teh Tarik">Teh Tarik</div>
+                <div class="menu-item-price">RM 2.50</div>
             </div>
 
-            <div class="menu-item" data-category="drinks" style="display: none;">
-                <img src="Cantonese Noodles.png" alt="Cantonese Noodles" class="menu-item-image">
-                <div class="menu-item-name" data-translate="Cantonese Noodles">Cantonese Noodles</div>
-                <div class="menu-item-price">RM 8.50</div>
+            <div class="menu-item hidden" data-category="drinks">
+                <img src="Cantonese Noodles.png" alt="Kopi O" class="menu-item-image">
+                <div class="menu-item-name" data-translate="Kopi O">Kopi O</div>
+                <div class="menu-item-price">RM 2.00</div>
             </div>
 
-            <div class="menu-item" data-category="drinks" style="display: none;">
-                <img src="Assam Laksa.png" alt="Assam Laksa" class="menu-item-image">
-                <div class="menu-item-name" data-translate="Assam Laksa">Assam Laksa</div>
-                <div class="menu-item-price">RM 7.50</div>
+            <div class="menu-item hidden" data-category="drinks">
+                <img src="Assam Laksa.png" alt="Milo Ais" class="menu-item-image">
+                <div class="menu-item-name" data-translate="Milo Ais">Milo Ais</div>
+                <div class="menu-item-price">RM 3.00</div>
             </div>
 
-            <div class="menu-item" data-category="drinks" style="display: none;">
-                <img src="Ah Hock Ken Mee.png" alt="Ah Hock Ken Mee" class="menu-item-image">
-                <div class="menu-item-name" data-translate="Ah Hock Ken Mee">Ah Hock Ken Mee</div>
-                <div class="menu-item-price">RM 8.00</div>
+            <div class="menu-item hidden" data-category="drinks">
+                <img src="Ah Hock Ken Mee.png" alt="Teh O Ais Limau" class="menu-item-image">
+                <div class="menu-item-name" data-translate="Teh O Ais Limau">Teh O Ais Limau</div>
+                <div class="menu-item-price">RM 3.50</div>
             </div>
-                </div>
+
+            <div class="menu-item hidden" data-category="drinks">
+                <img src="Nasi Goreng Kampung.png" alt="Air Sirap" class="menu-item-image">
+                <div class="menu-item-name" data-translate="Air Sirap">Air Sirap</div>
+                <div class="menu-item-price">RM 2.50</div>
+            </div>
+
+            <div class="menu-item hidden" data-category="drinks">
+                <img src="Nasi Goreng Cina.png" alt="Coconut Shake" class="menu-item-image">
+                <div class="menu-item-name" data-translate="Coconut Shake">Coconut Shake</div>
+                <div class="menu-item-price">RM 5.00</div>
+            </div>
+
+            <div class="menu-item hidden" data-category="drinks">
+                <img src="Hainanese Chicken Rice.png" alt="Fresh Orange Juice" class="menu-item-image">
+                <div class="menu-item-name" data-translate="Fresh Orange Juice">Fresh Orange Juice</div>
+                <div class="menu-item-price">RM 4.50</div>
+            </div>
+
+            <div class="menu-item hidden" data-category="drinks">
+                <img src="Ayam Crispy.png" alt="Mineral Water" class="menu-item-image">
+                <div class="menu-item-name" data-translate="Mineral Water">Mineral Water</div>
+                <div class="menu-item-price">RM 1.50</div>
             </div>
         </div>
     </div>
 
-    <!-- Cart Notification -->
+    <!-- Cart Notification - GOLDEN POPUP -->
     <div class="cart-notification" id="cartNotification">
-        <span class="cart-notification-icon">✅</span>
-        <span id="notificationText">Item added to cart!</span>
+        <span class="cart-notification-icon">✓</span>
+        <span id="notificationText" style="font-size: 22px; font-weight: 900;">Item added to cart!</span>
     </div>
 
     <!-- Bottom Navigation -->
@@ -919,36 +1089,46 @@
     <script>
         let cartCount = 0;
 
-        function showCategory(category) {
+        function showCategory(category, buttonElement) {
+            console.log('Showing category:', category);
+            
             // Update active button
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
 
             // Update menu title with translation
             const menuTitle = document.getElementById('menuTitle');
             const menuTitleKey = category + 'Menu';
             menuTitle.setAttribute('data-translate', menuTitleKey);
-            menuTitle.textContent = getTranslation(menuTitleKey);
+            menuTitle.textContent = t(menuTitleKey);
 
             // Show/hide menu items
+            let visibleCount = 0;
             document.querySelectorAll('.menu-item').forEach(item => {
                 if (item.dataset.category === category) {
-                    item.style.display = 'block';
+                    item.classList.remove('hidden');
+                    item.style.display = ''; // Clear any inline style
+                    visibleCount++;
                 } else {
-                    item.style.display = 'none';
+                    item.classList.add('hidden');
                 }
             });
 
+            console.log(`Displayed ${visibleCount} items for category: ${category}`);
+
             // Reset scroll position to top
-            const scrollContent = document.querySelector('.scroll-content');
-            scrollContent.scrollTop = 0;
-            
-            // Reset scroll state so highlights don't appear immediately
-            hasScrolled = false;
-            const scrollWrapper = document.getElementById('scrollWrapper');
-            scrollWrapper.classList.remove('at-top', 'at-bottom');
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+                // Reset scroll state so confirmation indicators don't appear immediately
+                hasScrolled = false;
+                mainContent.classList.remove('at-top', 'at-bottom');
+                console.log('Category changed, reset scroll state');
+            }
         }
 
         function goBack() {
@@ -959,40 +1139,118 @@
             window.location.href = 'cart-page.html';
         }
 
-        // Cart notification functions
+        // Cart notification functions - Kiosk Style
         function showCartNotification(itemName) {
             const notification = document.getElementById('cartNotification');
             const notificationText = document.getElementById('notificationText');
             
-            notificationText.textContent = `${itemName} added to cart!`;
-            notification.classList.add('show');
+            console.log('🔔🔔🔔 SHOWING NOTIFICATION for:', itemName);
+            console.log('Notification element:', notification);
+            console.log('Text element:', notificationText);
             
-            // Hide notification after 3 seconds
+            // Remove any existing classes
+            notification.classList.remove('show', 'hide');
+            
+            // Force reflow to restart animation
+            void notification.offsetWidth;
+            
+            // Set text with success icon - BOLD AND CLEAR
+            notificationText.textContent = `✓ ${itemName} added to cart!`;
+            
+            // Show with animation
+            setTimeout(() => {
+                notification.classList.add('show');
+                console.log('✅✅✅ Notification CLASS ADDED - should be visible now!');
+                console.log('Notification classes:', notification.className);
+            }, 50);
+            
+            // Hide notification after 4 seconds with animation
             setTimeout(() => {
                 notification.classList.remove('show');
-            }, 3000);
+                notification.classList.add('hide');
+                console.log('👋 Notification hiding');
+            }, 4000);
         }
 
         function updateCartBadge() {
+            console.log('🔴🔴🔴 UPDATE CART BADGE - Cart Count:', cartCount);
             const cartBadge = document.getElementById('cartBadge');
+            
+            console.log('Cart badge element:', cartBadge);
+            
+            if (!cartBadge) {
+                console.error('❌ ERROR: cartBadge element not found!');
+                return;
+            }
             
             if (cartCount > 0) {
                 cartBadge.textContent = cartCount;
-                cartBadge.classList.add('show');
+                console.log('✅ Badge text set to:', cartCount);
+                
+                // Add show class if not already shown
+                if (!cartBadge.classList.contains('show')) {
+                    cartBadge.classList.add('show');
+                    console.log('✅ Badge show class added');
+                }
+                
+                // Remove pop animation if it exists
+                cartBadge.classList.remove('pop');
+                
+                // Trigger pop animation
+                setTimeout(() => {
+                    cartBadge.classList.add('pop');
+                    console.log('💥 Badge pop animation triggered');
+                }, 10);
+                
+                // Remove pop class after animation
+                setTimeout(() => {
+                    cartBadge.classList.remove('pop');
+                }, 600);
             } else {
-                cartBadge.classList.remove('show');
+                cartBadge.classList.remove('show', 'pop');
+                console.log('Cart is empty, hiding badge');
             }
         }
 
         function updateCartDisplay() {
-            const cartWord = getTranslation('cart');
-            document.getElementById('cartText').textContent = `${cartWord} (${cartCount})`;
+            console.log('📊📊📊 UPDATE CART DISPLAY - Cart Count:', cartCount);
+            const cartWord = t('cart');
+            const cartTextElement = document.getElementById('cartText');
+            
+            console.log('Cart text element:', cartTextElement);
+            
+            if (cartTextElement) {
+                cartTextElement.textContent = `${cartWord} (${cartCount})`;
+                console.log('✅ Cart button text updated to:', `${cartWord} (${cartCount})`);
+            } else {
+                console.error('❌ ERROR: cartText element not found!');
+            }
+            
+            console.log('🔴 Updating cart badge...');
             updateCartBadge();
+            
+            // Shake cart button to draw attention
+            const cartBtn = document.querySelector('.cart-btn');
+            if (cartBtn) {
+                console.log('📳 Shaking cart button...');
+                cartBtn.classList.remove('shake');
+                setTimeout(() => {
+                    cartBtn.classList.add('shake');
+                }, 10);
+                setTimeout(() => {
+                    cartBtn.classList.remove('shake');
+                }, 500);
+            } else {
+                console.error('❌ ERROR: Cart button not found!');
+            }
         }
 
         // Cart management functions
         function addToCart(itemName, itemPrice, itemImage = '') {
-            console.log('Adding to cart:', itemName, itemPrice, itemImage);
+            console.log('');
+            console.log('========================================');
+            console.log('🛒🛒🛒 ADD TO CART CALLED:', itemName);
+            console.log('========================================');
             
             // Load existing cart
             let cartItems = [];
@@ -1001,13 +1259,13 @@
                 cartItems = JSON.parse(savedCart);
             }
             
-            console.log('Current cart before adding:', cartItems);
+            console.log('📦 Cart before adding:', cartItems.length, 'items');
 
             // Check if item already exists in cart
             const existingItem = cartItems.find(item => item.name === itemName);
             if (existingItem) {
                 existingItem.quantity += 1;
-                console.log('Item exists, increased quantity to:', existingItem.quantity);
+                console.log('➕ Existing item - quantity now:', existingItem.quantity);
             } else {
                 const newItem = {
                     name: itemName,
@@ -1017,107 +1275,204 @@
                     quantity: 1
                 };
                 cartItems.push(newItem);
-                console.log('New item added:', newItem);
+                console.log('✅ NEW item added with quantity: 1');
             }
 
             // Save to localStorage
             localStorage.setItem('amakiosk_cart', JSON.stringify(cartItems));
-            console.log('Cart saved to localStorage:', cartItems);
             
-            // Verify it was saved
-            const verify = localStorage.getItem('amakiosk_cart');
-            console.log('Verification - localStorage value:', verify);
-
-            // Update cart count
+            // Update cart count - THIS IS THE TOTAL OF ALL QUANTITIES
             cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-            updateCartDisplay();
-            showCartNotification(itemName);
+            console.log('📊 Total cart count:', cartCount, '(across', cartItems.length, 'unique items)');
             
-            console.log('Total items in cart:', cartCount);
+            console.log('🔄 Now calling updateCartDisplay()...');
+            updateCartDisplay();
+            console.log('✅ updateCartDisplay() completed');
+            
+            console.log('🔔 Now calling showCartNotification()...');
+            showCartNotification(itemName);
+            console.log('✅ showCartNotification() completed');
+            console.log('========================================');
+            console.log('');
         }
 
-        // Add to cart functionality
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const itemName = this.querySelector('.menu-item-name').textContent.trim();
-                const itemPriceText = this.querySelector('.menu-item-price').textContent;
-                const itemImage = this.querySelector('.menu-item-image');
+        // Setup click handlers for menu items using EVENT DELEGATION (more reliable)
+        function setupMenuItemClickHandlers() {
+            console.log('🔧 Setting up menu item click handlers with EVENT DELEGATION...');
+            
+            const menuGrid = document.getElementById('menuGrid');
+            if (!menuGrid) {
+                console.error('❌ ERROR: menuGrid not found!');
+                return;
+            }
+            
+            console.log('✅ Found menuGrid, attaching click listener...');
+            
+            // Use event delegation - ONE listener on the parent
+            menuGrid.addEventListener('click', function(e) {
+                // Find if we clicked on a menu-item or inside one
+                const menuItem = e.target.closest('.menu-item');
+                
+                if (!menuItem) {
+                    console.log('Click was not on a menu item, ignoring...');
+                    return;
+                }
+                
+                // Don't navigate or bubble
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('');
+                console.log('🖱️🖱️🖱️ MENU ITEM CLICKED!!!');
+                console.log('Clicked element:', menuItem);
+                
+                const itemNameElement = menuItem.querySelector('.menu-item-name');
+                const itemPriceElement = menuItem.querySelector('.menu-item-price');
+                const itemImage = menuItem.querySelector('.menu-item-image');
+                
+                if (!itemNameElement || !itemPriceElement) {
+                    console.error('❌ Could not find item name or price!');
+                    return;
+                }
+                
+                const itemName = itemNameElement.textContent.trim();
+                const itemPriceText = itemPriceElement.textContent;
+                
+                console.log('Item name:', itemName);
+                console.log('Item price text:', itemPriceText);
                 
                 // Extract numeric price from text (e.g., "RM 7.50" => 7.50)
                 const priceMatch = itemPriceText.match(/[\d.]+/);
                 const itemPrice = priceMatch ? parseFloat(priceMatch[0]) : 0;
                 
-                // Get image source - check if it's an img element or div with text
+                console.log('Extracted price:', itemPrice);
+                
+                // Get image source
                 let imageSrc = '';
                 if (itemImage && itemImage.tagName === 'IMG') {
                     imageSrc = itemImage.src;
-                } else if (itemImage && itemImage.textContent === 'IMAGE') {
-                    // For placeholder items, try to get image from alt or use a default
-                    const imgElement = this.querySelector('img');
-                    if (imgElement) {
-                        imageSrc = imgElement.src;
-                    }
                 }
                 
+                console.log('Image source:', imageSrc);
+                console.log('🚀 Now calling addToCart...');
+                
+                // Add directly to cart
                 addToCart(itemName, itemPrice, imageSrc);
-            });
-        });
+            }, true); // Use capture phase to ensure we get the event first
+            
+            console.log('✅✅✅ Event delegation click handler setup complete!');
+        }
 
-        // Scroll edge highlight functionality
+        // Scroll confirmation indicator functionality
         let hasScrolled = false;
 
         function updateScrollHighlights() {
-            const scrollWrapper = document.getElementById('scrollWrapper');
-            const scrollContent = document.querySelector('.scroll-content');
+            const mainContent = document.querySelector('.main-content');
+            if (!mainContent) return;
             
-            // Mark that scrolling has started
-            hasScrolled = true;
-            
-            const scrollTop = scrollContent.scrollTop;
-            const scrollHeight = scrollContent.scrollHeight;
-            const clientHeight = scrollContent.clientHeight;
+            const scrollTop = mainContent.scrollTop;
+            const scrollHeight = mainContent.scrollHeight;
+            const clientHeight = mainContent.clientHeight;
             const scrollBottom = scrollHeight - scrollTop - clientHeight;
             
-            const atTop = scrollTop <= 5;
-            const atBottom = scrollBottom <= 5;
-            
-            // Show top highlight only when at very top AND user has scrolled
-            if (atTop && hasScrolled) {
-                scrollWrapper.classList.add('at-top');
-            } else {
-                scrollWrapper.classList.remove('at-top');
+            // Only show indicators after user has scrolled
+            if (scrollTop > 0 || scrollBottom < scrollHeight - clientHeight - 2) {
+                hasScrolled = true;
             }
             
-            // Show bottom highlight only when at very bottom AND user has scrolled
-            if (atBottom && hasScrolled) {
-                scrollWrapper.classList.add('at-bottom');
+            // Top indicator: show ONLY when at very top (scrollTop === 0) AND user has scrolled
+            if (scrollTop === 0 && hasScrolled) {
+                mainContent.classList.add('at-top');
             } else {
-                scrollWrapper.classList.remove('at-bottom');
+                mainContent.classList.remove('at-top');
+            }
+            
+            // Bottom indicator: show ONLY when at very bottom (scrollBottom < 2) AND user has scrolled
+            if (scrollBottom < 2 && hasScrolled) {
+                mainContent.classList.add('at-bottom');
+            } else {
+                mainContent.classList.remove('at-bottom');
+            }
+            
+            console.log('Menu scroll state:', {
+                scrollTop,
+                scrollBottom,
+                atTop: scrollTop === 0,
+                atBottom: scrollBottom < 2,
+                hasScrolled: hasScrolled
+            });
+        }
+
+        // Load cart count from localStorage
+        function loadCartCount() {
+            const savedCart = localStorage.getItem('amakiosk_cart');
+            if (savedCart) {
+                try {
+                    const cartItems = JSON.parse(savedCart);
+                    cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+                    updateCartDisplay();
+                    console.log('Cart count loaded:', cartCount, 'items');
+                } catch (e) {
+                    console.error('Error loading cart:', e);
+                    cartCount = 0;
+                    updateCartDisplay();
+                }
+            } else {
+                cartCount = 0;
+                updateCartDisplay();
             }
         }
 
+        // This function is no longer needed - cart clearing is handled in DOMContentLoaded
+
         // Apply translations on page load
         document.addEventListener('DOMContentLoaded', function() {
-            applyTranslations();
-            initializeInactivityTimer();
+            // Load cart count from localStorage FIRST (before clearing)
+            loadCartCount();
             
-            // Add scroll event listener to scroll content
-            const scrollContent = document.querySelector('.scroll-content');
-            scrollContent.addEventListener('scroll', updateScrollHighlights);
-            
-            // Load cart count from localStorage
-            const savedCart = localStorage.getItem('amakiosk_cart');
-            if (savedCart) {
-                const cartItems = JSON.parse(savedCart);
-                cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+            // Only clear cart on actual refresh (F5), not on navigation
+            const isRefresh = performance.navigation.type === 1;
+            if (isRefresh) {
+                console.log('🔄 F5 refresh detected - clearing cart');
+                localStorage.removeItem('amakiosk_cart');
+                localStorage.removeItem('show_add_success');
+                localStorage.removeItem('added_item_name');
+                localStorage.removeItem('customize_item');
+                cartCount = 0;
                 updateCartDisplay();
+            } else {
+                console.log('📍 Normal navigation - keeping cart');
             }
             
-            // Don't call initial check - highlights only appear after user starts scrolling
+            updatePageTranslations();
+            initializeInactivityTimer();
+            
+            // Add scroll event listener to main content
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) {
+                mainContent.addEventListener('scroll', updateScrollHighlights);
+                // Initial check (won't show indicators because hasScrolled is false)
+                updateScrollHighlights();
+                console.log('Scroll indicators initialized');
+            }
+            
+            // Setup menu item click handlers
+            setupMenuItemClickHandlers();
+        });
+
+        // Handle page show event (back navigation)
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                // Page was loaded from cache (back button)
+                console.log('Page shown from cache, reloading cart count...');
+                loadCartCount();
+            }
         });
 
         // Initialize with rice menu
-        showCategory('rice');
+        const firstButton = document.querySelector('.category-btn.active');
+        showCategory('rice', firstButton);
+
     </script>
 </body>
 </html>
