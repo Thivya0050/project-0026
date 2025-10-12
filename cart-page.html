@@ -57,6 +57,47 @@
             padding: 20px 40px;
             overflow-y: auto;
             background-color: #efebce;
+            position: relative;
+        }
+
+        /* Scroll Confirmation Indicators */
+        .cart-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(to bottom, rgba(33, 150, 243, 0.6), transparent);
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.4);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .cart-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(to top, rgba(33, 150, 243, 0.6), transparent);
+            box-shadow: 0 -2px 8px rgba(33, 150, 243, 0.4);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        /* Show indicators when at scroll boundaries */
+        .cart-section.at-top::before {
+            opacity: 1;
+        }
+
+        .cart-section.at-bottom::after {
+            opacity: 1;
         }
 
         .cart-items-container {
@@ -543,7 +584,7 @@
     <!-- Header with Logo -->
     <div class="header-section">
         <div class="logo-container">
-            <img src="Ah Hock Ken Mee.png" alt="Ali, Muthu & Ah Hock" class="logo">
+            <img src="logo old.png" alt="Ali, Muthu & Ah Hock" class="logo">
         </div>
     </div>
 
@@ -701,7 +742,8 @@
                 price: item.price,
                 basePrice: item.basePrice || item.price, // Use basePrice if available
                 image: item.image,
-                cartIndex: index
+                cartIndex: index,
+                customizations: item.customizations || [] // Pass existing customizations
             };
             
             localStorage.setItem('customize_item', JSON.stringify(customizeData));
@@ -768,16 +810,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('=== CART PAGE LOADED ===');
             console.log('Timestamp:', new Date().toISOString());
-            console.log('Checking localStorage for cart...');
             
-            // Check both possible keys
-            const cartKey1 = localStorage.getItem('amakiosk_cart');
-            const cartKey2 = localStorage.getItem('kioskCart');
-            
-            console.log('amakiosk_cart:', cartKey1);
-            console.log('kioskCart:', cartKey2);
-            
-            // Force load cart
+            // Load cart
             loadCart();
             
             // Update translations
@@ -785,9 +819,7 @@
                 updatePageTranslations();
             }
             
-            console.log('Final cart items count:', cartItems.length);
-            console.log('Cart items:', cartItems);
-            console.log('======================');
+            console.log('Cart items count:', cartItems.length);
         });
 
         // TEST FUNCTION - Add a sample item for debugging
@@ -808,7 +840,67 @@
         
         // Make it available from console
         window.addTestItem = addTestItem;
+
+        // Scroll Confirmation Indicator Logic
+        let hasUserScrolled = false;
+        const cartSection = document.querySelector('.cart-section');
+
+        function updateScrollIndicators() {
+            if (!cartSection) return;
+            
+            const scrollTop = cartSection.scrollTop;
+            const scrollHeight = cartSection.scrollHeight;
+            const clientHeight = cartSection.clientHeight;
+            const scrollBottom = scrollHeight - scrollTop - clientHeight;
+            
+            // Only show indicators after user has scrolled
+            if (scrollTop > 0 || scrollBottom < scrollHeight - clientHeight - 2) {
+                hasUserScrolled = true;
+            }
+            
+            // Top indicator: show ONLY when at very top AND user has scrolled
+            if (scrollTop === 0 && hasUserScrolled) {
+                cartSection.classList.add('at-top');
+            } else {
+                cartSection.classList.remove('at-top');
+            }
+            
+            // Bottom indicator: show ONLY when at very bottom AND user has scrolled
+            if (scrollBottom < 2 && hasUserScrolled) {
+                cartSection.classList.add('at-bottom');
+            } else {
+                cartSection.classList.remove('at-bottom');
+            }
+            
+            console.log('Scroll state:', {
+                scrollTop,
+                scrollBottom,
+                atTop: scrollTop === 0,
+                atBottom: scrollBottom < 2,
+                hasScrolled: hasUserScrolled
+            });
+        }
+
+        // Add scroll event listener
+        if (cartSection) {
+            cartSection.addEventListener('scroll', updateScrollIndicators);
+            
+            // Initial check (won't show anything because hasUserScrolled is false)
+            updateScrollIndicators();
+        }
+
+        // Reset scroll state when cart is updated
+        const originalDisplayCart = displayCart;
+        displayCart = function() {
+            originalDisplayCart();
+            hasUserScrolled = false; // Reset on cart update
+            if (cartSection) {
+                cartSection.classList.remove('at-top', 'at-bottom');
+                cartSection.scrollTop = 0; // Reset scroll position
+            }
+        };
     </script>
 </body>
 </html>
+
 
