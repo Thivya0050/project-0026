@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Payment - Ali, Muthu & Ah Hock</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #F5F5DC;
+        }
+
+        /* Header Section with Logo */
+        .header-section {
+            background-color: #bf8a47;
+            width: 100%;
+            height: 12vh;
+            display: flex;
+            align-items: center;
+            padding: 15px 40px;
+            flex-shrink: 0;
+        }
+
+        .logo-container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 85%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Main Content - Samsung Tab A8 Optimized */
+        .main-content {
+            flex: 1;
+            width: 100%;
+            padding: 15px 30px;
+            overflow: hidden;
+            background-color: #F5F5DC;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        /* Payment Methods Grid - Samsung Tab A8 Optimized */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 700px;
+            margin: 0 auto;
+            width: 100%;
+            height: 250px;
+        }
+
+        .payment-method {
+            background-color: #4A2C1A;
+            border: 2px solid #8B4513;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            height: 100%;
+            position: relative;
+        }
+
+        .payment-method:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            border-color: #FDB913;
+        }
+
+        .payment-method.selected {
+            border: 3px solid #FDB913;
+            background-color: #5D4037;
+        }
+
+        .payment-method img {
+            max-width: 100px;
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .payment-icon {
+            font-size: 80px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Order Summary Card - Samsung Tab A8 Optimized */
+        .order-summary {
+            background-color: white;
+            border-radius: 15px;
+            padding: 0;
+            max-width: 700px;
+            margin: 0 auto;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .summary-header {
+            background-color: #4A2C1A;
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .summary-content {
+            padding: 15px;
+        }
+
+        .summary-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .item-price {
+            font-weight: bold;
+            color: #bf8a47;
+        }
+
+        .summary-divider {
+            height: 2px;
+            background: #FDB913;
+            margin: 12px 0;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .total-label {
+            font-size: 18px;
+            font-weight: bold;
+            color: #bf8a47;
+            text-transform: uppercase;
+        }
+
+        .total-amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: #bf8a47;
+        }
+
+        /* Footer Buttons - Samsung Tab A8 Optimized */
+        .footer-section {
+            background-color: #F5F5DC;
+            width: 100%;
+            padding: 10px 30px 15px 30px;
+            flex-shrink: 0;
+        }
+
+        .button-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+        }
+
+        .back-button {
+            background-color: #4A2C1A;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 18px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex: 0 0 180px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+            background-color: #5D4037;
+        }
+
+        .pay-button {
+            background-color: #FDB913;
+            color: #362315;
+            border: none;
+            border-radius: 15px;
+            padding: 18px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex: 1;
+        }
+
+        .pay-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+            background-color: #ffca28;
+        }
+
+        .pay-button:disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-button:active,
+        .pay-button:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .payment-methods {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .payment-method {
+                min-height: 150px;
+                padding: 40px 20px;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .back-button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Logo -->
+    <div class="header-section">
+        <div class="logo-container">
+            <img src="logo old.png" alt="Ali, Muthu & Ah Hock" class="logo">
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Payment Methods -->
+        <div class="payment-methods">
+            <div class="payment-method" data-method="card" onclick="selectPaymentMethod('card')">
+                <div class="payment-icon">💳</div>
+            </div>
+            <div class="payment-method" data-method="touchngo" onclick="selectPaymentMethod('touchngo')">
+                <img src="touch N Go.png" alt="Touch 'n Go" style="max-width: 100px;">
+            </div>
+            <div class="payment-method" data-method="cash" onclick="selectPaymentMethod('cash')">
+                <div class="payment-icon">💵</div>
+            </div>
+            <div class="payment-method" data-method="qr" onclick="selectPaymentMethod('qr')">
+                <img src="qr.png" alt="QR Code" style="filter: brightness(0) invert(1); max-width: 100px;">
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <div class="summary-header">Order Summary</div>
+            <div class="summary-content">
+                <div class="summary-items" id="summaryItems">
+                    <!-- Items will be loaded here -->
+                </div>
+                <div class="summary-divider"></div>
+                <div class="summary-total">
+                    <div class="total-label">Total</div>
+                    <div class="total-amount" id="totalAmount">RM 0.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Buttons -->
+    <div class="footer-section">
+        <div class="button-container">
+            <button class="back-button" onclick="goBack()">BACK</button>
+            <button class="pay-button" id="payButton" onclick="processPayment()">PAY HERE</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedPaymentMethod = null;
+        let cartItems = [];
+        let totalAmount = 0;
+
+        // Load cart and display order summary
+        function loadOrderSummary() {
+            console.log('Loading order summary...');
+            
+            const savedCart = localStorage.getItem('amakiosk_cart');
+            if (savedCart) {
+                cartItems = JSON.parse(savedCart);
+                console.log('Cart items:', cartItems);
+            }
+
+            const summaryContainer = document.getElementById('summaryItems');
+            
+            if (cartItems.length === 0) {
+                summaryContainer.innerHTML = '<div class="summary-item"><div class="item-name">No items in cart</div></div>';
+                totalAmount = 0;
+            } else {
+                summaryContainer.innerHTML = cartItems.map(item => {
+                    const itemTotal = item.price * item.quantity;
+                    return `
+                        <div class="summary-item">
+                            <div class="item-name">${item.name} ${item.quantity > 1 ? 'x ' + item.quantity : ''}</div>
+                            <div class="item-price">RM ${itemTotal.toFixed(2)}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            }
+
+            document.getElementById('totalAmount').textContent = `RM ${totalAmount.toFixed(2)}`;
+            console.log('Total amount:', totalAmount);
+        }
+
+        // Select payment method
+        function selectPaymentMethod(method) {
+            console.log('Payment method selected:', method);
+            
+            // Remove selection from all
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            // Add selection to clicked one
+            document.querySelector(`[data-method="${method}"]`).classList.add('selected');
+            
+            selectedPaymentMethod = method;
+            
+            // Enable pay button
+            document.getElementById('payButton').disabled = false;
+        }
+
+        // Go back to cart
+        function goBack() {
+            window.location.href = 'cart-page.html';
+        }
+
+        // Process payment
+        function processPayment() {
+            if (!selectedPaymentMethod) {
+                alert('Please select a payment method!');
+                return;
+            }
+
+            if (cartItems.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            console.log('Processing payment...');
+            console.log('Payment method:', selectedPaymentMethod);
+            console.log('Total amount:', totalAmount);
+
+            // Generate order number
+            const orderNumber = Math.floor(Math.random() * 900) + 100; // 100-999
+            
+            // Clear cart
+            localStorage.removeItem('amakiosk_cart');
+            
+            // Store order number for success page
+            localStorage.setItem('lastOrderNumber', orderNumber);
+            
+            // Redirect to payment success page
+            window.location.href = 'payment-success.html';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Payment page loaded');
+            loadOrderSummary();
+            
+            // Disable pay button initially
+            document.getElementById('payButton').disabled = true;
+        });
+    </script>
+</body>
+</html>
+
