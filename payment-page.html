@@ -263,6 +263,66 @@
         }
 
         /* Responsive Design */
+        /* Samsung A8 Tablet Optimization - 1920x1200 */
+        @media (min-width: 1200px) and (max-width: 1920px) and (min-height: 800px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            .header-section {
+                height: 12vh;
+                padding: 15px 40px;
+            }
+
+            .main-content {
+                padding: 20px 60px;
+            }
+
+            .order-summary h2 {
+                font-size: 26px;
+                margin-bottom: 15px;
+            }
+
+            .total-section {
+                font-size: 28px;
+                padding: 20px;
+                margin: 20px 0;
+            }
+
+            .payment-methods {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+                margin: 25px 0;
+            }
+
+            .payment-method {
+                padding: 25px;
+                min-height: 140px;
+            }
+
+            .payment-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 36px;
+            }
+
+            .payment-name {
+                font-size: 20px;
+            }
+
+            .footer-buttons {
+                gap: 30px;
+                padding: 25px 60px;
+            }
+
+            .pay-button, .back-button {
+                padding: 20px 50px;
+                font-size: 22px;
+                min-width: 250px;
+            }
+        }
+
         @media (max-width: 768px) {
             .payment-methods {
                 grid-template-columns: 1fr;
@@ -411,17 +471,30 @@
             console.log('Payment method:', selectedPaymentMethod);
             console.log('Total amount:', totalAmount);
 
+            // Disable pay button to prevent double clicks
+            const payButton = document.querySelector('.pay-button');
+            if (payButton) {
+                payButton.disabled = true;
+                payButton.textContent = 'Processing...';
+                payButton.style.opacity = '0.6';
+            }
+
             // Generate order number
             const orderNumber = Math.floor(Math.random() * 900) + 100; // 100-999
             
-            // Clear cart
-            localStorage.removeItem('amakiosk_cart');
-            
-            // Store order number for success page
+            // Store order number for success page BEFORE clearing cart
             localStorage.setItem('lastOrderNumber', orderNumber);
+            localStorage.setItem('lastPaymentMethod', selectedPaymentMethod);
             
-            // Redirect to payment success page
-            window.location.href = 'payment-success.html';
+            // Wait 2 seconds before redirecting (processing simulation)
+            setTimeout(() => {
+                // Clear cart after successful payment
+                localStorage.removeItem('amakiosk_cart');
+                localStorage.removeItem('kioskCartTotal');
+                
+                // Redirect to payment success page
+                window.location.href = 'payment-success.html';
+            }, 2000);
         }
 
         // Initialize on page load
