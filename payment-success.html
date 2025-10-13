@@ -151,6 +151,67 @@
             z-index: 1000;
         }
 
+        /* Samsung A8 Tablet Optimization - 1920x1200 */
+        @media (min-width: 1200px) and (max-width: 1920px) and (min-height: 800px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            .header-section {
+                height: 12vh;
+                padding: 15px 40px;
+            }
+
+            .header-title {
+                font-size: 28px;
+                letter-spacing: 2px;
+            }
+
+            .main-content {
+                padding: 40px 60px;
+                gap: 40px;
+            }
+
+            .thank-you-message {
+                font-size: 32px;
+                line-height: 1.6;
+            }
+
+            .order-card {
+                padding: 50px 60px;
+                max-width: 700px;
+            }
+
+            .order-label {
+                font-size: 26px;
+                margin-bottom: 20px;
+            }
+
+            .order-number {
+                font-size: 140px;
+                margin: 25px 0;
+            }
+
+            .order-number-small {
+                font-size: 45px;
+            }
+
+            .order-instructions {
+                font-size: 24px;
+                line-height: 1.8;
+            }
+
+            .footer-message {
+                font-size: 24px;
+            }
+
+            .redirect-timer {
+                font-size: 20px;
+                padding: 18px 35px;
+            }
+        }
+
         /* Responsive Design for Samsung Tab A8 */
         @media (max-width: 1024px) {
             .header-title {
@@ -239,12 +300,12 @@
 
     <!-- Redirect Timer -->
     <div class="redirect-timer" id="redirectTimer">
-        Returning to menu in <span id="countdown">10</span>s
+        Returning to start in <span id="countdown">10</span>s
     </div>
 
     <script>
         let orderNumber = 100;
-        let countdown = 10;
+        let countdown = 10; // Changed to 10 seconds
 
         // Load order number from localStorage
         function loadOrderNumber() {
@@ -253,7 +314,22 @@
                 orderNumber = savedOrderNumber;
                 document.querySelector('.order-number').innerHTML = 
                     `<span class="order-number-small">No</span>${orderNumber}`;
+                console.log('Order number loaded:', orderNumber);
+            } else {
+                console.log('No order number found, using default');
             }
+        }
+
+        // Clear all kiosk data for fresh start
+        function clearKioskData() {
+            localStorage.removeItem('amakiosk_cart');
+            localStorage.removeItem('kioskCartTotal');
+            localStorage.removeItem('lastOrderNumber');
+            localStorage.removeItem('lastPaymentMethod');
+            localStorage.removeItem('customize_item');
+            localStorage.removeItem('show_add_success');
+            localStorage.removeItem('added_item_name');
+            console.log('All kiosk data cleared for fresh start');
         }
 
         // Countdown timer
@@ -265,15 +341,20 @@
                 
                 if (countdown <= 0) {
                     clearInterval(timer);
-                    // Redirect to menu
-                    window.location.href = 'new-menu-sample.html';
+                    console.log('Countdown finished, clearing data and redirecting to flashpage...');
+                    
+                    // Clear all data before returning to start
+                    clearKioskData();
+                    
+                    // Redirect to flashpage.html to restart the kiosk flow
+                    window.location.href = 'flashpage.html';
                 }
             }, 1000);
         }
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Payment success page loaded');
+            console.log('✅ Payment success page loaded');
             loadOrderNumber();
             startCountdown();
         });
