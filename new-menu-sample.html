@@ -1445,7 +1445,11 @@
             }
             
             updatePageTranslations();
-            initializeInactivityTimer();
+            
+            // Initialize inactivity timer if function exists
+            if (typeof initializeInactivityTimer === 'function') {
+                initializeInactivityTimer();
+            }
             
             // Add scroll event listener to main content
             const mainContent = document.querySelector('.main-content');
@@ -1458,6 +1462,10 @@
             
             // Setup menu item click handlers
             setupMenuItemClickHandlers();
+            
+            // Initialize with rice menu - MOVED INSIDE DOMContentLoaded
+            const firstButton = document.querySelector('.category-btn.active');
+            showCategory('rice', firstButton);
         });
 
         // Handle page show event (back navigation)
@@ -1468,10 +1476,6 @@
                 loadCartCount();
             }
         });
-
-        // Initialize with rice menu
-        const firstButton = document.querySelector('.category-btn.active');
-        showCategory('rice', firstButton);
 
     </script>
 </body>
