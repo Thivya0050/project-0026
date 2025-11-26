@@ -2,10 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#bf8a47">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AMAK Kiosk">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="AMAK Kiosk">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    
     <title>Language & Dining Selection</title>
     <style>
         * {
@@ -54,6 +70,15 @@
             letter-spacing: 1px;
             width: 93%;
             max-width: 1400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-button img {
+            max-height: 50px;
+            width: auto;
+            object-fit: contain;
         }
 
         .back-button:hover {
@@ -150,16 +175,19 @@
 
         .dining-title {
             background-color: #362315;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
             padding: 18px;
             border-radius: 25px;
             margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dining-title img {
+            max-height: 40px;
+            width: auto;
+            object-fit: contain;
         }
 
         .dining-grid {
@@ -223,8 +251,65 @@
             transform: translateY(-1px);
         }
 
-        /* Samsung A8 Tablet Optimization - 1920x1200 */
-        @media (min-width: 1200px) and (max-width: 1920px) and (min-height: 800px) {
+        /* Samsung A8 Tablet Portrait Mode - 1200x1920 */
+        @media (max-width: 1200px) and (min-height: 1900px) and (orientation: portrait) {
+            .back-button-section {
+                height: 12vh;
+                padding: 12px 25px;
+            }
+
+            .back-button {
+                padding: 18px 45px;
+                font-size: 20px;
+            }
+
+            .back-button img {
+                max-height: 45px;
+            }
+
+            .language-section {
+                flex: 0 0 38%;
+                padding: 12px 25px;
+            }
+
+            .language-container {
+                padding: 25px 40px;
+            }
+
+            .language-grid {
+                gap: 18px;
+            }
+
+            .language-button {
+                font-size: 22px;
+                padding: 15px;
+            }
+
+            .dining-section {
+                flex: 0 0 38%;
+                padding: 12px 25px;
+            }
+
+            .dining-container {
+                padding: 25px 40px;
+            }
+
+            .dining-grid {
+                gap: 18px;
+            }
+
+            .dining-button {
+                font-size: 24px;
+                padding: 20px;
+            }
+
+            .dining-button img {
+                max-height: 70px;
+            }
+        }
+
+        /* Samsung A8 Tablet Landscape Mode - 1920x1200 */
+        @media (min-width: 1200px) and (max-width: 1920px) and (min-height: 800px) and (orientation: landscape) {
             .back-button-section {
                 height: 12vh;
             }
@@ -259,9 +344,12 @@
             }
 
             .dining-title {
-                font-size: 26px;
                 padding: 20px;
                 margin-bottom: 30px;
+            }
+
+            .dining-title img {
+                max-height: 45px;
             }
 
             .dining-grid {
@@ -342,7 +430,7 @@
 <body>
     <!-- Back Button Section -->
     <div class="back-button-section">
-        <button class="back-button" onclick="goBack()" data-translate="selectLanguage">SELECT LANGUAGE</button>
+        <button class="back-button" id="selectLangBtn" onclick="goBack()" data-translate="selectLanguage">SELECT LANGUAGE</button>
     </div>
 
     <!-- Language Selection Section -->
@@ -360,11 +448,11 @@
     <!-- Dining Preference Section -->
     <div class="dining-section">
         <div class="dining-container">
-            <div class="dining-title" data-translate="diningPreference">DINING PREFERENCE</div>
+        <div class="dining-title" id="diningTitle" data-translate="diningPreference">DINING PREFERENCE</div>
             <div class="dining-grid">
                 <!-- Dine In Option -->
                 <div class="dining-option">
-                    <div class="dining-card">
+                    <div class="dining-card" onclick="selectDining('dineIn')">
                         <img src="dineInn.png" alt="Dine In" class="dining-image">
                     </div>
                     <button class="dining-button" onclick="selectDining('dineIn')" data-translate="dineIn">DINE IN</button>
@@ -372,7 +460,7 @@
 
                 <!-- Take Away Option -->
                 <div class="dining-option">
-                    <div class="dining-card">
+                    <div class="dining-card" onclick="selectDining('takeAway')">
                         <img src="takeAwayy.png" alt="Take Away" class="dining-image">
                     </div>
                     <button class="dining-button" onclick="selectDining('takeAway')" data-translate="takeAway">TAKE AWAY</button>
@@ -409,6 +497,9 @@
             if (langCode) {
                 setLanguage(langCode);
             }
+            
+            // Update title images immediately after language selection
+            updateLanguagePageTitles();
             
             // Visual feedback
             const buttons = document.querySelectorAll('.language-button');
@@ -465,6 +556,42 @@
                 }, 500);
             }
         }
+
+        // Update titles based on language
+        function updateLanguagePageTitles() {
+            const currentLang = localStorage.getItem('kioskLanguage') || 'en';
+            
+            // Update dining preference title
+            const diningTitle = document.getElementById('diningTitle');
+            if (currentLang === 'en') {
+                diningTitle.innerHTML = '<img src="dpfont.png" alt="Dining Preference">';
+            } else if (currentLang === 'ms') {
+                diningTitle.innerHTML = '<img src="dpmfont.png" alt="Dining Preference">';
+            } else {
+                diningTitle.textContent = t('diningPreference');
+            }
+            
+            // Update select language button
+            const selectLangBtn = document.getElementById('selectLangBtn');
+            if (currentLang === 'en') {
+                selectLangBtn.innerHTML = '<img src="languagefont.png" alt="Select Language">';
+            } else if (currentLang === 'ms') {
+                selectLangBtn.innerHTML = '<img src="PBfont.png" alt="Select Language">';
+            } else {
+                selectLangBtn.textContent = t('selectLanguage');
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update translations
+            if (typeof updatePageTranslations === 'function') {
+                updatePageTranslations();
+            }
+            
+            // Update titles based on language
+            updateLanguagePageTitles();
+        });
     </script>
 </body>
 </html>
