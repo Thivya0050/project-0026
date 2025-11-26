@@ -561,25 +561,13 @@
         function updateLanguagePageTitles() {
             const currentLang = localStorage.getItem('kioskLanguage') || 'en';
             
-            // Update dining preference title
+            // Update dining preference title - USE TEXT ONLY
             const diningTitle = document.getElementById('diningTitle');
-            if (currentLang === 'en') {
-                diningTitle.innerHTML = '<img src="dpfont.png" alt="Dining Preference">';
-            } else if (currentLang === 'ms') {
-                diningTitle.innerHTML = '<img src="dpmfont.png" alt="Dining Preference">';
-            } else {
-                diningTitle.textContent = t('diningPreference');
-            }
+            diningTitle.textContent = t('diningPreference');
             
-            // Update select language button
+            // Update select language button - USE TEXT ONLY
             const selectLangBtn = document.getElementById('selectLangBtn');
-            if (currentLang === 'en') {
-                selectLangBtn.innerHTML = '<img src="languagefont.png" alt="Select Language">';
-            } else if (currentLang === 'ms') {
-                selectLangBtn.innerHTML = '<img src="PBfont.png" alt="Select Language">';
-            } else {
-                selectLangBtn.textContent = t('selectLanguage');
-            }
+            selectLangBtn.textContent = t('selectLanguage');
         }
 
         // Initialize on page load
